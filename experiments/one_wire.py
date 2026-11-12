@@ -127,7 +127,7 @@ def main():
         print("Wrote",dest)
     for model in ("gn27","window"):
         x=report["nine_relay_comparison"][model]
-        print("NINE_RING",model,"late errors",x["errors_in_second_half"],file=sys.stderr)
+        print("NINE_RING",model,"late errors",x["errors_in_second_half"],"cold variance",x.get("variance_cold_samples","n/a"),"/",x.get("variance_samples","n/a"),"per node",x.get("variance_cold_per_node","n/a"),file=sys.stderr)
     if args.exhaustive:
         for m,s in report["exhaustive"].items():
             print("EXHAUSTIVE",m,s["passed"],"/",s["tested"],file=sys.stderr)
