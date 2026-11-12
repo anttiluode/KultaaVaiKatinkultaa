@@ -48,7 +48,19 @@ Using world period 36 and events at phase 0,8,20, independent runs found 10 erro
 
 But the original variance trace recorded **zero cold-branch samples out of 14,740** after tick 100. None of 11 units crossed below the variance target (0.1) in the measured interval.
 
-This contradicts the proposed explanation that repeated damp/amplify branch crossings caused the leak. The source of the discrepancy remains to be established. The new [variance_branch.py](experiments/variance_branch.py) offers a controlled forced-damp ablation without changing the original gn27.py source.
+This contradicts the proposed explanation that repeated damp/amplify branch crossings caused the leak. The source of the discrepancy remains to be established. We additionally ran
+[variance_branch.py](experiments/variance_branch.py): temporarily setting the
+target threshold to -1 forces the damp branch while leaving the same checkerboard,
+edge weights and delays. **The forced-damp network still produced 10 late
+errors**, matching the unchanged GN27. The memoryless window produced zero.
+Thus the particular nine-relay leak is not explained by 50-tick variance
+branch switching.
+
+The same script tested **autonomous clock behavior**: after settling,
+one GN27 unit at constant 1.0 produced six beats in 360 ticks, spaced
+59 ticks apart; the abstract window control produced zero. This is one
+real GN-specific capability absent from the matched window neuron, although
+it does not by itself establish a task-level performance benefit.
 
 Do not call the leak biological adaptation or habituation before identifying the mechanism.
 
