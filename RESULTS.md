@@ -86,6 +86,23 @@ Full machine-generated records are attached as the experimental-results
 artifact in the GitHub Actions workflow. The deterministic stress script is
 experiments/stress.py.
 
+
+## Native early/late test
+
+The original cable-delay feature (L=0 or L=1), feeding two unchanged
+XOR-like receivers, can distinguish timing direction under controlled
+single-beat inputs:
+
+| World relative to prediction | World-delayed receiver | Prediction-delayed receiver |
+|---|---|---|
+| 1 tick early | silent | fires at t=9 |
+| perfectly aligned | fires at t=10,12 | fires at t=10,12 |
+| 1 tick late | fires at t=10 | silent |
+
+Thus the *difference* between the receivers has phase-sign information,
+but both receivers fire even on an exact match. This has not solved the
+jitter problem. See experiments/phase.py and the GNPhase regression test.
+
 ## Scientific status
 
 **Demonstrated within the reduced native simulator:** state-dependent
