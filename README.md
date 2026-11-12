@@ -4,7 +4,7 @@ A **real, falsifiable GN experiment**: can the same unchanged nonlinear Geometri
 
 **Main finding (12 November 2026):** In a precisely synchronized 32-tick scaffold, 11 unmodified V27 units can acquire and remove circulating prediction events using their own error spikes. The network does not run a programmed XOR, does not directly assign stored bits, does not update weights, and does not learn the period.
 
-[Interactive offline lab](index.html) | [Scientific analysis](SCIENCE.md) | [Python experiments](experiments/kultaa.py) | [Stress diagnostics](experiments/stress.py) | [Automated checks](.github/workflows/ci.yml)
+[Interactive offline lab](index.html) | [Scientific analysis](SCIENCE.md) | [Measured limits](RESULTS.md) | [Python experiments](experiments/kultaa.py) | [Stress diagnostics](experiments/stress.py) | [Automated checks](.github/workflows/ci.yml)
 
 ## Native signed discrepancy
 
@@ -72,6 +72,11 @@ The fixed-period scaffold is strong enough for clean periodic events but is sens
 - superiority over a digital cyclic shift register
 
 The three-input equal-weight sweep from -14 to -1 in increments of .25 found **no** full 0,1,0,1 parity response. The sampled nonlinear response has a firing band; that alone is not a periodic activation function.
+
+
+**Stress result:** In 33 deliberately selected patterns, 20/33 were encoded exactly by the source, 22/33 were predicted exactly from actual source events, and 14/33 succeeded end-to-end. With ±1 tick of jitter, the two error receivers produced repeated updates (14–16 innovations and 13–15 omissions over 20 laps) instead of settling. See RESULTS.md for protocols and limitations.
+
+**Early/late probe:** Two 1-tick cable-offset comparators encode timing direction: one channel fires for early, the other for late. But with perfectly aligned input, both channels fire; an additional common-mode suppression mechanism is required. See experiments/phase.py and its regression test.
 
 Read SCIENCE.md for detailed comparison to Gidon 2020, Keller 2012, Pyragas feedback control, Jeffress coincidence detection and Massey's feedback-register synthesis.
 
