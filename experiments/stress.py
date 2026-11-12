@@ -11,7 +11,7 @@ def evaluate(phases,laps=12):
     r=learn([phases for _ in range(laps)])
     start,end=2*32,laps*32
     # A 2-tick pulse entering a native source normally yields a beat 4 ticks later.
-    requested={lap*32+p+4 for lap in range(2,laps)
+    requested={lap*32+p+4 for lap in range(laps)
                for p in phases if start<=lap*32+p+4<end}
     world={t for t in r["world"] if start<=t<end}
     predicted={t for t in r["prediction"] if start<=t<end}
