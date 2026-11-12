@@ -14,7 +14,7 @@
   extra_at_5:"One unexpected event is written and then erased.",
   phase_1:"A fixed phase shift of one tick; new empty memory learns the shifted pattern."
  };
- let scenario="empty_single",events=[],time=0,write=true,erase=true,timer=null;
+ let scenario="empty_single",architecture="signed",events=[],time=0,write=true,erase=true,timer=null;
  const schedule=lap=>{
   if(scenario==="empty_two")return [0,16];
   if(scenario==="add_second_at_5")return lap>=5?[0,16]:[0];
@@ -28,9 +28,14 @@
  };
  function simulate(){
   const edges=Array.from({length:8},(_,i)=>[i+1,1+(i+1)%8,-6,0]);
-  edges.push([0,9,-5,0],[1,9,5,0],[0,10,5,0],[1,10,-5,0]);
-  if(write)edges.push([9,3,-6,0]);
-  if(erase)edges.push([10,3,6,0]);
+  if(architecture==="one_wire"){
+   edges.push([0,9,-4.5,0],[1,9,-4.5,0]);
+   if(write)edges.push([9,3,-6,0]); // XOR pulse toggles slot, no separate erase
+  } else {
+   edges.push([0,9,-5,0],[1,9,5,0],[0,10,5,0],[1,10,-5,0]);
+   if(write)edges.push([9,3,-6,0]);
+   if(erase)edges.push([10,3,6,0]);
+  }
   const net=new Net(Array(11).fill(RELAY),edges).settle(1500);
   const e=Array.from({length:11},()=>[]),last=Array(11).fill(true);
   for(let t=0;t<640;t++){
@@ -91,7 +96,7 @@
   }
   ctx.fillStyle="#c7e8ed";ctx.font="bold 17px system-ui";ctx.fillText("MEMORY",cx,cy-15);
   ctx.fillStyle="#a9bdce";ctx.font="13px system-ui";ctx.fillText("8 relays · 32 ticks",cx,cy+13);
-  for(const [x,i,label,c] of [[65,0,"WORLD",colors[0]],[215,9,"WRITE",colors[2]],[365,10,"ERASE",colors[3]]]){
+  for(const [x,i,label,c] of [[65,0,"WORLD",colors[0]],[215,9,architecture==="one_wire"?"XOR":"WRITE",colors[2]],[365,10,architecture==="one_wire"?"—":"ERASE",colors[3]]]){
    const flash=now(events[i],time);
    ctx.beginPath();ctx.arc(x,375,flash?14:10,0,Math.PI*2);
    ctx.fillStyle=flash?c:"#4a6174";ctx.fill();
@@ -109,7 +114,7 @@
    if(lap%2===0){ctx.fillStyle="#9ab1c4";ctx.fillText(lap,px-3,265);}
   }
   ctx.fillStyle="#9ab1c4";ctx.fillText("Laps",12,265);
-  const tracks=[[0,"World",colors[0]],[1,"Prediction",colors[1]],[9,"Innovation",colors[2]],[10,"Omission",colors[3]]];
+  const tracks=[[0,"World",colors[0]],[1,"Prediction",colors[1]],[9,architecture==="one_wire"?"XOR error":"Innovation",colors[2]],[10,architecture==="one_wire"?"Unused":"Omission",colors[3]]];
   tracks.forEach(([idx,label,color],i)=>{
    const y=51+i*52;ctx.fillStyle="#d4e0ef";ctx.fillText(label,10,y+2);
    ctx.strokeStyle="#35506a";ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-20,y);ctx.stroke();
@@ -127,10 +132,19 @@
  }
  function recompute(){
   events=simulate();
+  const one=architecture==="one_wire";
+  $("erase").disabled=one;
+  $("writeControlLabel").textContent=one?"XOR error → toggle":"Innovation → write";
+  $("eraseControlLabel").textContent=one?"No separate erase":"Omission → erase";
+  $("writeMetricTitle").textContent=one?"XOR discrepancy spikes":"Innovation spikes";
+  $("eraseMetricTitle").textContent=one?"No erase unit":"Omission spikes";
+  $("greenLegend").textContent=one?"XOR error / toggle":"Innovation / write";
+  $("pinkLegend").textContent=one?"Unused":"Omission / erase";
   [["worldCount",0],["predictionCount",1],["writeCount",9],["eraseCount",10]]
    .forEach(([id,i])=>$(id).textContent=String(events[i].length));
-  $("description").textContent=scenarioText[scenario]+"  Innovation: "+
-   (events[9].join(", ")||"none")+". Omission: "+(events[10].join(", ")||"none")+".";
+  $("description").textContent=(one?"ONE-WIRE: XOR error pulses both write and erase. ":"SIGNED: separate innovation and omission receivers. ")+scenarioText[scenario]+
+    (one?"  XOR events: ":"  Innovation: ")+(events[9].join(", ")||"none")+
+    (one?".":". Omission: "+(events[10].join(", ")||"none")+".");
   display();
  }
  function stop(){
@@ -144,6 +158,7 @@
  });
  $("restart").addEventListener("click",()=>{stop();time=0;display()});
  $("scenario").addEventListener("change",()=>{stop();scenario=$("scenario").value;time=0;recompute()});
+ $("architecture").addEventListener("change",()=>{stop();architecture=$("architecture").value;time=0;recompute()});
  $("write").addEventListener("change",()=>{stop();write=$("write").checked;recompute()});
  $("erase").addEventListener("change",()=>{stop();erase=$("erase").checked;recompute()});
  $("scrub").addEventListener("input",()=>{time=Number($("scrub").value);display()});
