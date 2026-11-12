@@ -13,7 +13,15 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m unittest discover -s tests -p 'test_*.py' -v
       - run: python experiments/kultaa.py --output results/latest.json
+      - run: python experiments/stress.py results/stress.json
+      - run: node --check lab.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/test_native.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: experimental-results
-          path: results/latest.json
+          path: |
+            results/latest.json
+            results/stress.json
