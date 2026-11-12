@@ -21,6 +21,18 @@ Every source and receiver runs the original 4-tick, 50-sample-variance V27 check
 
 **Precision:** this table is for **synchronous two-tick events**. A one-tick input offset can destroy XOR cancellation.
 
+## New: Opus's one-wire XOR baseline
+
+We independently reproduced the [Opus repository](https://github.com/anttiluode/KultaaVaiKatinkultaaOpus) using our unchanged GN27 core. **One unsigned XOR receiver, fed back to memory node 3 with weight -6, both writes and erases**. A missing beat is written; a false existing beat is removed by the same error pulse. This makes the separate innovation/omission pair optional for a fixed synchronized binary rhythm.
+
+**Exhaustive 8-slot test:** 255/255 nonempty 4-tick-grid rhythms eventually acquired with zero late error pulses, both on GN27 and on Opus's checkerboard-free window-neuron control. The criterion is error silence after lap 8 plus a final-lap exact match, *not* proof every pattern locks in one lap.
+
+**GN-only distinction:** the nine-relay 36-tick ring produced 10 late errors under GN27 but zero under the window control; all 14,740 measured late variance values were above the 0.1 branch boundary. Forcing every unit to remain on the damp branch still gave 10 errors, disproving the proposed variance-branch-switch explanation for that leak. An isolated GN27 clock at constant 1.0 fired six times in 360 ticks (59-tick intervals); the window control never fired.
+
+[Read the full Opus/Sol reconciliation](OPUS_COMPARISON.md), [reproduce the exhaustive comparison](experiments/one_wire.py), or [test the causal branch ablation](experiments/variance_branch.py).
+
+In the offline browser lab, use **Native feedback circuit** to switch between the older signed-two-receiver model and the new one-wire XOR architecture.
+
 ## Eleven units: memory that edits itself by pulses
 
 The fixed circuit has:
