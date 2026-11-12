@@ -14,7 +14,7 @@ jobs:
       - run: python -m unittest discover -s tests -p 'test_*.py' -v
       - run: python experiments/kultaa.py --output results/latest.json
       - run: python experiments/stress.py results/stress.json
-      - run: python experiments/phase.py > results/phase.json
+      - run: python experiments/phase.py | tee results/phase.json
       - run: node --check lab.js
       - uses: actions/setup-node@v4
         with:
