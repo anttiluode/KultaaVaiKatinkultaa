@@ -15,6 +15,7 @@ jobs:
       - run: python experiments/kultaa.py --output results/latest.json
       - run: python experiments/stress.py results/stress.json
       - run: python experiments/phase.py | tee results/phase.json
+      - run: python experiments/one_wire.py --exhaustive --output results/one_wire.json
       - run: node --check lab.js
       - uses: actions/setup-node@v4
         with:
@@ -27,3 +28,4 @@ jobs:
             results/latest.json
             results/stress.json
             results/phase.json
+            results/one_wire.json
