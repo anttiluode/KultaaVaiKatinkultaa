@@ -24,4 +24,19 @@ class OneWire(unittest.TestCase):
         self.assertEqual(control["errors_in_second_half"],0)
         self.assertIn("variance_cold_samples",native)
 
+
+class GNSubstrate(unittest.TestCase):
+    def test_nine_relay_forced_damp_does_not_fix_leak(self):
+        from variance_branch import n9
+        d=n9()
+        self.assertEqual(d["native"]["late_errors"],10)
+        self.assertEqual(d["native"]["variance_at_or_below_0_1"],0)
+        self.assertEqual(d["force_all_damp"]["late_errors"],10)
+        self.assertEqual(d["simple_window"]["late_errors"],0)
+    def test_autonomous_clock_is_gn_only(self):
+        from variance_branch import clock
+        result=clock()
+        self.assertEqual(result["gn27"]["beat_count"],6)
+        self.assertEqual(result["window"]["beat_count"],0)
+
 if __name__=="__main__":unittest.main()
