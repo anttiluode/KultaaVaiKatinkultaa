@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Kultaa vai katinkultaa? | Native geometric memory</title>
+<style>
+:root{--bg:#090f18;--card:#121f30;--line:#2d4357;--ink:#e8f2ff;--dim:#a3b8cb;--world:#65b9ff;--prediction:#d8b46f;--write:#5ce1bb;--erase:#ff7ea3}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 45% -15%,#284e60 0%,#101b29 45%,#070e16 100%);color:var(--ink);font:15px/1.6 system-ui,Segoe UI,Arial,sans-serif}
+main{width:min(1160px,calc(100% - 34px));margin:0 auto;padding:33px 0 65px}
+.hero{margin-bottom:28px;padding:0 4px}.eyebrow{font-size:12px;letter-spacing:.18em;color:#6de9c9;font-weight:750;text-transform:uppercase}
+h1{font-size:clamp(2rem,5.7vw,4rem);margin:3px 0 12px;line-height:1.12;letter-spacing:-.045em}
+h2{font-size:1.4rem;letter-spacing:-.02em;margin:0 0 5px}h3{margin:5px 0;font-size:1rem}
+p{color:var(--dim);margin:7px 0 14px;max-width:930px}
+b{color:#f5fcff}.lede{max-width:830px;font-size:1.08rem;color:#cfdeed}
+.section{margin:21px 0;border:1px solid var(--line);background:linear-gradient(140deg,#17273a 0%,#111b2a 90%);border-radius:19px;padding:clamp(16px,3vw,26px);box-shadow:0 12px 32px #0003}
+.twocol{display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,330px);gap:18px}
+fieldset{border:1px solid #345067;border-radius:12px;margin:0;padding:14px;background:#0e1b2b}
+legend{font-size:12px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;font-weight:800}
+label{color:#d4e3f1}
+select,button{color:var(--ink);background:#273c52;border:1px solid #547087;border-radius:9px;padding:9px 11px;font:inherit}
+select{width:100%;cursor:pointer}
+button{cursor:pointer}button:hover{background:#35516a}
+.checks{display:flex;gap:18px;margin:13px 0;flex-wrap:wrap}
+input[type=checkbox],input[type=range]{accent-color:#60dabd;cursor:pointer}
+input[type=range]{width:100%}
+.control{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:11px 0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.stat{padding:12px 13px;background:#0d1928;border:1px solid #294456;border-radius:11px}
+.stat strong{display:block;font-size:clamp(1.2rem,3vw,1.75rem);line-height:1.35;font-variant-numeric:tabular-nums}
+.stat small{display:block;color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+canvas{display:block;max-width:100%;height:auto}
+.orbitframe{display:flex;align-items:center;justify-content:center;background:#0c1827;border:1px solid #2e4357;border-radius:14px;padding:5px}
+#orbit{width:min(100%,390px);min-width:0}
+.rasterframe{background:#0c1827;border:1px solid #2e4357;border-radius:12px;margin-top:14px;overflow-x:auto}
+#raster{min-width:620px;width:100%}
+.legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:10px;color:#c2d4e7;font-size:13px}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px}
+.tiny{font-size:12px;color:var(--dim)}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid #31485c;padding:10px;text-align:center}
+th{font-size:12px;color:#a7bed0;font-weight:700}
+table thead th:first-child,table tbody td:first-child{text-align:left}
+.code{font-family:Consolas,monospace;font-size:13px;color:#84e4cd}
+a{color:#84dfed}
+footer{border-top:1px solid var(--line);padding-top:17px;margin-top:28px;color:var(--dim);font-size:13px}
+@media(max-width:800px){.twocol{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body><main>
+<header class="hero">
+<div class="eyebrow">An experiment in native dynamics / 12 November 2026</div>
+<h1>Kultaa vai katinkultaa?</h1>
+<p class="lede">Gold or fool's gold? Eleven unchanged geometric units. One world signal. Eight circulating memory relays. Two signed error receivers. Watch a ring acquire, retain, and erase predictions through its own native pulses.</p>
+<p class="tiny">The period, initial wiring, and input schedule are supplied by the experimenter. The receivers and memory changes come from the original 2025 Perception Lab dynamics, not programmed Boolean comparisons or direct memory editing.</p>
+</header>
+<section class="section">
+<h2>01 / A machine that can become quiet</h2>
+<p>The native write receiver fires when the world surprises an empty memory. Its pulse enters the ring at a carefully chosen point. On later laps the ring produces the expected event itself, making the receiver silent. The opposite signed receiver removes predictions no longer supported by the world.</p>
+<div class="twocol">
+<div class="orbitframe"><canvas id="orbit" width="430" height="440" aria-label="Eight-node relay ring and world, innovation and omission units"></canvas></div>
+<div>
+<fieldset><legend>Try the experiments</legend>
+<label for="scenario">External world pattern</label>
+<select id="scenario">
+<option value="empty_single">Learn one beat per lap</option>
+<option value="empty_two">Learn two beats per lap</option>
+<option value="add_second_at_5">Learn a second beat after lap five</option>
+<option value="remove_second_at_8">Erase second beat after lap eight</option>
+<option value="switch_0_to_16">Switch the expected phase</option>
+<option value="stop_after_5">Stop the world after five laps</option>
+<option value="omit_at_5">Skip one expected event</option>
+<option value="extra_at_5">Add one unexpected event</option>
+<option value="phase_1">Start one tick later</option>
+</select>
+<div class="checks"><label><input type="checkbox" id="write" checked> Innovation → write</label>
+<label><input type="checkbox" id="erase" checked> Omission → erase</label></div>
+<div class="actions"><button id="run">▶ Play</button><button id="restart">↺ Restart</button></div>
+<div class="control"><label for="scrub">Simulation time</label><strong id="tick">0 / 640</strong></div>
+<input id="scrub" type="range" min="0" max="639" step="1" value="0">
+<div class="control"><label for="speed">Ticks per frame</label><span id="speedLabel">1</span></div>
+<input type="range" id="speed" min="1" max="8" value="1">
+</fieldset>
+<p id="description" aria-live="polite">The ring begins empty and learns from the first world event.</p>
+<p class="tiny">Green nodes flash for write-related beats; pink is the omission receiver. Displayed spikes are generated by the actual GN27 JavaScript simulator.</p>
+</div></div>
+<div class="stats">
+<div class="stat"><strong id="worldCount">—</strong><small>World events</small></div>
+<div class="stat"><strong id="predictionCount">—</strong><small>Prediction events</small></div>
+<div class="stat"><strong id="writeCount">—</strong><small>Innovation spikes</small></div>
+<div class="stat"><strong id="eraseCount">—</strong><small>Omission spikes</small></div>
+</div>
+<div class="rasterframe"><canvas id="raster" width="1120" height="285" aria-label="Spikes by lap, world prediction innovation omission"></canvas></div>
+<div class="legend">
+<span><i class="swatch" style="background:var(--world)"></i>World</span>
+<span><i class="swatch" style="background:var(--prediction)"></i>Ring prediction</span>
+<span><i class="swatch" style="background:var(--write)"></i>Innovation / write</span>
+<span><i class="swatch" style="background:var(--erase)"></i>Omission / erase</span>
+</div>
+</section>
+<section class="section">
+<h2>02 / Four forms of the same unit</h2>
+<p>All source and receiver constants stay at 1.6. Only two coupling strengths change. In this arrangement the native unit becomes an XOR-like comparator, an AND-like coincidence detector, or one of two signed discrepancy detectors.</p>
+<table id="truth">
+<thead><tr><th>World / memory</th><th>XOR<br><span class="code">−4.5 / −4.5</span></th><th>AND<br><span class="code">−2.5 / −2.5</span></th><th>Innovation<br><span class="code">−5 / +5</span></th><th>Omission<br><span class="code">+5 / −5</span></th></tr></thead>
+<tbody></tbody>
+</table>
+<p class="tiny">Each receiver is simulated independently for 44 ticks after settling, with two-tick input pulses. A positive source drive makes no external XOR calculation: it stimulates an ordinary native sender which then affects the receiver through its original setpoint port.</p>
+</section>
+<section class="section">
+<h2>03 / What is and isn't being discovered</h2>
+<p><b>Demonstrated:</b> signed native coincidence logic, a recurring learned phase in an initially empty 32-tick ring, and removal of an obsolete expected event using existing nonlinear dynamics. <b>Not demonstrated:</b> learning a period or general sequence law, robust phase-locking, physiological dendritic calcium mechanisms, or a maximal-length LFSR.</p>
+<p>The same-sign XOR receiver goes silent through overshoot of a nonlinear firing band; that is <b>not proof of physical destructive wave interference</b>. This is a computational experiment in a sampled feedback system, not an optical bench experiment.</p>
+<p><a href="https://github.com/anttiluode/KultaaVaiKatinkultaa">Source and reproducible tests</a> · <a href="https://github.com/anttiluode/GN-XOR">Previous GN-XOR result</a> · <a href="https://github.com/anttiluode/GeometricNeuronV27">Original GN27 core</a>.</p>
+</section>
+<footer>The repository name is a question, not a verdict. Each new claim should earn its way into the README through a controlled measurement.</footer>
+</main>
+<script src="taps.js"></script><script src="v27.js"></script><script src="lab.js"></script>
+</body></html>
